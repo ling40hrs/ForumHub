@@ -1,18 +1,49 @@
+import { TOKEN_KEY, USER_KEY, UNAUTH_EVENT } from '../constants/auth';
+
 const BASE = '/api';
 
+export class ApiError extends Error {
+  constructor(message, status, body) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
+  }
+}
+
+export function getToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+function clearAuth() {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+  window.dispatchEvent(new CustomEvent(UNAUTH_EVENT));
+}
+
 export async function api(path, options = {}) {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
+  const token = getToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+  };
 
-  const data = await res.json();
+  const res = await fetch(`${BASE}${path}`, { ...options, headers });
 
-  if (!res.ok) {
-    throw new Error(data.error ?? 'Request failed');
+  if (res.status === 204) return null;
+
+  const body = await res.json().catch(() => ({}));
+
+  if (res.status === 401) {
+    clearAuth();
   }
 
-  return data;
+  if (!res.ok) {
+    throw new ApiError(body.error ?? 'Request failed', res.status, body);
+  }
+
+  return body;
 }
 
 export const get  = (path) => api(path);
