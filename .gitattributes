@@ -1,0 +1,40 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# PHP
+*.php text
+
+# JS/JSX
+*.js text
+*.jsx text
+*.mjs text
+*.cjs text
+
+# CSS/Tailwind
+*.css text
+
+# Config
+*.json text
+*.yml text
+*.yaml text
+*.toml text
+*.ini text
+
+# Docs
+*.md text
+*.sql text
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg text
+*.ico binary
+*.webp binary
+
+# Fonts
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
