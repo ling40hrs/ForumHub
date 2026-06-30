@@ -138,7 +138,7 @@ The ForumHub development team consists of two members, each owning their layer w
 | Frontend Dev | React components, UI/UX, Tailwind styling, frontend tooling |
 | Backend Dev | PHP API, database design, authentication, server config |
 
-Both members use AI-assisted development (MiMoCode/OpenCode) to accelerate development. Layer ownership is strict — frontend dev never touches `api/` or `database/`, backend dev never touches `frontend/` or `public/`. Cross-layer features are coordinated through GitHub issues spanning both layers.
+Both members use AI-assisted development tools (MiMoCode, Claude Code, Cursor, Copilot, etc.) to accelerate development. Layer ownership is strict — frontend dev never touches `api/` or `database/`, backend dev never touches `frontend/` or `public/`. Cross-layer features are coordinated through the centralized workflow in `CLAUDE.md` and GitHub issues.
 
 ## Conclusion
 

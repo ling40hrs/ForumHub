@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ling40hrs/ForumHub/docs/schemas/user.json",
+  "title": "User",
+  "type": "object",
+  "properties": {
+    "id":         { "type": "integer" },
+    "username":   { "type": "string", "minLength": 3, "maxLength": 30 },
+    "email":      { "type": "string", "format": "email" },
+    "avatar":     { "type": ["string", "null"] },
+    "bio":        { "type": ["string", "null"] },
+    "karma":      { "type": "integer" },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "required": ["id", "username", "email", "karma", "created_at"]
+}

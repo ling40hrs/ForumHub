@@ -177,10 +177,20 @@ cd frontend && npm run build
 | Purpose | Path |
 |---------|------|
 | AI agent instructions | `AGENTS.md` |
+| AI session ritual | `.ai/session-start.md` |
+| AI prompt library | `.ai/prompts/` |
+| Onboarding guide | `CONTRIBUTING.md` |
 | Project proposal | `Context.md` |
+| API contract (shared spec) | `docs/api-contract.md` |
+| Error codes (shared) | `api/config/errors.php` |
+| Data schemas (shared) | `docs/schemas/` |
+| Architecture decisions | `docs/decisions/` |
+| Glossary | `docs/glossary.md` |
+| Environment reference | `docs/environment.md` |
 | Database schema | `database/schema.sql` |
 | API routes | `api/routes/api.php` |
 | Frontend entry | `frontend/src/main.jsx` |
 | Auth context | `frontend/src/context/AuthContext.jsx` |
 | API client | `frontend/src/lib/fetch.js` |
+| Change log | `CHANGELOG.md` |
 | Centralized workflow | `CLAUDE.md` (this file) |

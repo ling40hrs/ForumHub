@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=== ForumHub Setup ==="
+echo ""
+
+# ── Backend ──
+echo "→ Installing PHP dependencies..."
+cd "$(dirname "$0")/../api"
+composer install --quiet
+
+if [ ! -f .env ]; then
+    cp .env.example .env
+    echo "  Created .env from .env.example — edit database credentials."
+fi
+
+cd - > /dev/null
+
+# ── Frontend ──
+echo "→ Installing Node dependencies..."
+cd "$(dirname "$0")/../frontend"
+npm install --silent
+cd - > /dev/null
+
+echo ""
+echo "=== Setup complete ==="
+echo ""
+echo "Start development:"
+echo "  Backend:  cd api && php -S localhost:8000 -t public"
+echo "  Frontend: cd frontend && npm run dev"
+echo "  Database: mysql -u root -p < database/schema.sql"

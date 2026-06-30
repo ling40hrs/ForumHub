@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Pre-commit hook: run quality checks before committing.
+# Install: ln -sf ../../bin/pre-commit .git/hooks/pre-commit
+set -euo pipefail
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+PASS=0
+FAIL=0
+
+check() {
+  local name="$1"
+  shift
+  if "$@" 2>/dev/null; then
+    echo -e "${GREEN}✅ ${name}${NC}"
+    PASS=$((PASS + 1))
+  else
+    echo -e "${RED}❌ ${name}${NC}"
+    FAIL=$((FAIL + 1))
+  fi
+}
+
+echo "=== ForumHub Pre-Commit ==="
+
+# 1. File length
+echo ""
+echo "--- File length check ---"
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+for f in $STAGED; do
+  if [ -f "$f" ] && echo "$f" | grep -qE '\.(php|js|jsx|css)$'; then
+    LINES=$(wc -l < "$f")
+    if [ "$LINES" -gt 200 ]; then
+      echo -e "${RED}❌ ${f}: ${LINES} lines (max 200)${NC}"
+      FAIL=$((FAIL + 1))
+    else
+      echo -e "${GREEN}✅ ${f}: ${LINES} lines${NC}"
+    fi
+  fi
+done
+
+# 2. PHP syntax
+echo ""
+echo "--- PHP syntax ---"
+for f in $STAGED; do
+  if echo "$f" | grep -qE '\.php$'; then
+    php -l "$f" > /dev/null && PASS=$((PASS + 1)) || FAIL=$((FAIL + 1))
+  fi
+done
+
+# 3. Forbidden patterns
+echo ""
+echo "--- Pattern check ---"
+for f in $STAGED; do
+  if [ -f "$f" ]; then
+    if grep -q '@ts-ignore' "$f" 2>/dev/null; then
+      echo -e "${RED}❌ ${f}: contains @ts-ignore${NC}"
+      FAIL=$((FAIL + 1))
+    fi
+  fi
+done
+
+echo ""
+echo "=== Results: ${PASS} passed, ${FAIL} failed ==="
+exit $FAIL
