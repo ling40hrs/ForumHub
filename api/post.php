@@ -22,8 +22,9 @@ $ogDescription = mb_substr($post['body'] ?? '', 0, 200);
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="space-y-6">
+  <div class="progress-bar" aria-hidden="true"></div>
   <a href="index.php" class="text-sm text-ink-faint transition hover:text-pop">← Back to feed</a>
-  <article class="card flex animate-fade-in-up overflow-hidden">
+  <article class="card flex reveal overflow-hidden">
     <div class="vote-rail" data-score="<?= esc($post['score']) ?>">
       <button type="button" class="vote-btn is-up" aria-label="Upvote">▲</button>
       <span class="vote-score"><?= esc($post['score']) ?></span>
@@ -43,7 +44,7 @@ require __DIR__ . '/includes/header.php';
       </div>
     </div>
   </article>
-  <section class="card animate-fade-in-up p-5">
+  <section class="card reveal p-5">
     <h2 class="mb-3 font-display font-semibold text-ink">Add a comment</h2>
     <form action="post.php?id=<?= $id ?>" method="post" class="space-y-3">
       <textarea name="body" rows="3" placeholder="What are your thoughts?"

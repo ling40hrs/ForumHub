@@ -12,23 +12,19 @@ function avatarHtml(array $user, int $size = 10): string {
     $username = $user['username'] ?? 'guest';
     $initial = esc(mb_strtoupper(mb_substr($username, 0, 1)));
     $color = esc($user['avatar_color'] ?? '#ff4500');
-    $px = $size * 4; // Tailwind spacing unit: 1 == 0.25rem == 4px
+    $px = $size * 4;
 
-    // Initial circle — used as the onerror fallback. Sized inline so it never
-    // depends on Tailwind compiling a dynamic (sprintf-built) class.
     $initialCircle = sprintf(
         '<div style="width:%1$dpx;height:%1$dpx;background-color:%2$s"'
         . ' class="flex items-center justify-center rounded-full border-2 border-line text-white font-semibold animate-scale-in">%3$s</div>',
         $px, $color, $initial
     );
 
-    // Uploaded picture wins; otherwise a stable cartoon avatar per user.
     $url = $user['avatar_url'] ?? '';
     if ($url === '') {
         $url = 'https://api.dicebear.com/9.x/bottts/svg?seed=' . rawurlencode($username);
     }
 
-    // Escape double quotes (not single) so the onerror attribute boundary holds.
     $fallback = "'" . str_replace('"', '&quot;', $initialCircle) . "'";
     return sprintf(
         '<img src="%1$s" alt="%2$s" width="%3$d" height="%3$d" loading="lazy"'
@@ -54,7 +50,7 @@ function postCardHtml(array $post, int $index = 0): string {
         ? '<a href="community.php?slug=' . $slug . '" class="font-display font-semibold text-pop transition hover:underline">' . $community . '</a>'
         : '';
     return <<<HTML
-    <div class="animate-fade-in-up" style="animation-delay:{$delay}ms">
+    <div class="reveal" style="--reveal-delay:{$delay}ms">
       <article class="card flex overflow-hidden">
         <div class="vote-rail" data-score="{$score}">
           <button type="button" class="vote-btn is-up" aria-label="Upvote">▲</button>
@@ -90,7 +86,7 @@ function communityCardHtml(array $c, int $index = 0): string {
     $initial = esc(mb_strtoupper(mb_substr($c['name'] ?? '', 0, 1)));
     $delay = min($index, 7) * 55;
     return <<<HTML
-    <div class="animate-fade-in-up" style="animation-delay:{$delay}ms">
+    <div class="reveal" style="--reveal-delay:{$delay}ms">
       <a href="community.php?slug={$slug}" class="card flex items-start gap-3 p-3">
         <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pop font-display text-lg font-black text-white">{$initial}</span>
         <div class="min-w-0">
@@ -111,7 +107,7 @@ function commentItemHtml(array $c, int $depth = 0, int $index = 0): string {
     $indent = $depth > 0 ? 'ml-6 border-l-2 border-line pl-4' : '';
     $delay = min($index, 7) * 55;
     return <<<HTML
-    <div class="animate-fade-in py-3 {$indent}" style="animation-delay:{$delay}ms">
+    <div class="reveal py-3 {$indent}" style="--reveal-delay:{$delay}ms">
       <div class="flex flex-wrap items-center gap-2 text-xs text-ink-faint">
         <span class="font-semibold text-ink-soft">{$author}</span>
         <span>·</span><span>{$time}</span>

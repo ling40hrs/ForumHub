@@ -190,8 +190,10 @@ $pageTitle = $title . ' · Yapr';
     }
   </style>
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="css/polish.css">
 </head>
 <body class="h-full">
+<svg aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:9999;pointer-events:none;opacity:0.035;mix-blend-mode:overlay"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grain)"/></svg>
 <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-lg focus:bg-pop focus:px-4 focus:py-2 focus:text-white focus:outline-none">Skip to content</a>
 <?php require __DIR__ . '/navbar.php'; ?>
 <main id="main-content" class="relative z-10 mx-auto max-w-5xl animate-fade-in px-4 py-6">
