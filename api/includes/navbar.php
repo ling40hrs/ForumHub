@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 // Top navigation. $currentUser may be empty (logged-out state).
 $user = $currentUser ?? null;
 ?>

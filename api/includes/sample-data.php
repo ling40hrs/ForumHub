@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 // Static sample data for the frontend-only pass (no DB). Backend dev replaces with MySQL.
 
 $currentUser = [

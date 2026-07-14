@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 // Presentation helpers for the Yapr static frontend (no framework).
 
 function esc($value): string {

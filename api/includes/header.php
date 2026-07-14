@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 // Shared document head + opening body. Expects $title to be set by the page.
 if (!isset($title)) {
     $title = 'Home';
