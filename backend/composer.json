@@ -1,0 +1,21 @@
+{
+    "name": "codecraft/yapr-api",
+    "description": "Yapr REST API backend",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\Controllers\\": "controllers/",
+            "App\\Models\\": "models/",
+            "App\\Middleware\\": "middleware/",
+            "App\\Config\\": "config/",
+            "App\\Helpers\\": "helpers/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000 -t public"
+    }
+}

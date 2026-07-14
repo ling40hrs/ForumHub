@@ -1,0 +1,9 @@
+{
+  "name": "yapr",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Yapr — plain PHP + Tailwind CSS (CDN), no build step",
+  "scripts": {
+    "dev": "php -S localhost:8000 -t public router.php"
+  }
+}

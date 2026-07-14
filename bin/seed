@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Seed the database with test data for development.
+set -euo pipefail
+
+DB_HOST="${DB_HOST:-127.0.0.1}"
+DB_PORT="${DB_PORT:-3306}"
+DB_NAME="${DB_NAME:-yapr}"
+DB_USER="${DB_USER:-root}"
+DB_PASS="${DB_PASS:-}"
+
+MYSQL_CMD="mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USER}"
+[ -n "$DB_PASS" ] && MYSQL_CMD="${MYSQL_CMD} -p${DB_PASS}"
+
+echo "→ Seeding ${DB_NAME}..."
+
+# Users
+${MYSQL_CMD} ${DB_NAME} <<SQL
+INSERT INTO users (username, email, password, bio, karma) VALUES
+('alice', 'alice@test.com', '\$2y\$10\$dummy', 'Forum enthusiast', 42),
+('bob', 'bob@test.com', '\$2y\$10\$dummy', 'Backend developer', 17),
+('charlie', 'charlie@test.com', '\$2y\$10\$dummy', 'Frontend developer', 88);
+SQL
+
+# Communities
+${MYSQL_CMD} ${DB_NAME} <<SQL
+INSERT INTO communities (name, slug, description, owner_id) VALUES
+('Technology', 'technology', 'All about tech', 1),
+('Gaming', 'gaming', 'Video games discussion', 2),
+('Design', 'design', 'UI/UX and visual design', 3);
+SQL
+
+# Posts
+${MYSQL_CMD} ${DB_NAME} <<SQL
+INSERT INTO posts (title, body, user_id, community_id) VALUES
+('Welcome to Yapr!', 'This is the first post on our platform.', 1, 1),
+('PHP 8 features you should know', 'Let''s discuss the latest PHP features.', 2, 1),
+('Best web dev patterns 2026', 'What patterns are you using this year?', 3, 3);
+SQL
+
+# Comments
+${MYSQL_CMD} ${DB_NAME} <<SQL
+INSERT INTO comments (body, user_id, post_id, parent_id) VALUES
+('Great post!', 2, 1, NULL),
+('Thanks for sharing!', 3, 2, NULL),
+('I agree, clean server-side code is the way to go.', 1, 3, NULL);
+SQL
+
+echo "✅ Database seeded with test data."
+echo "   Users: alice, bob, charlie"
+echo "   Communities: technology, gaming, design"
+echo "   Posts: 3  |  Comments: 3"
