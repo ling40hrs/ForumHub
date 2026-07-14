@@ -11,10 +11,11 @@ $ogDescription = $ogDescription ?? 'Yapr — a community where people yap about 
 $pageTitle = $title . ' · Yapr';
 ?>
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
   <script>history.scrollRestoration='manual';window.scrollTo(0,0);</script>
   <title><?= esc($pageTitle) ?></title>
   <meta name="description" content="<?= esc($ogDescription) ?>">
@@ -28,6 +29,7 @@ $pageTitle = $title . ' · Yapr';
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -37,10 +39,10 @@ $pageTitle = $title . ' · Yapr';
             sans: ['"Hanken Grotesk"', 'system-ui', 'sans-serif'],
           },
           animation: {
-            'fade-in': 'fade-in 0.6s ease-out both',
-            'fade-in-up': 'fade-in-up 0.5s ease-out both',
-            'fade-in-down': 'fade-in-down 0.5s ease-out both',
-            'scale-in': 'scale-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+            'fade-in': 'fade-in 0.25s ease-out both',
+            'fade-in-up': 'fade-in-up 0.25s ease-out both',
+            'fade-in-down': 'fade-in-down 0.15s ease-out both',
+            'scale-in': 'scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both',
             'gradient-pan': 'gradient-pan 10s ease infinite',
           },
           keyframes: {
@@ -58,16 +60,16 @@ $pageTitle = $title . ' · Yapr';
             link: '#ff6a3d',
           },
           boxShadow: {
-            card: '0 1px 2px rgba(0,0,0,0.5)',
             'card-hover': '0 0 0 1px rgba(50,145,255,0.40)',
           },
         },
       },
     };
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
     body {
+      background: #000000;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -77,14 +79,7 @@ $pageTitle = $title . ' · Yapr';
       border-radius: 1rem;
       border: 1px solid #262626;
       background: #0a0a0a;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-      transition: all 0.3s;
-      animation: fade-in-up 0.5s ease-out both;
-    }
-    .card:hover {
-      transform: translateY(-0.125rem);
-      border-color: rgba(255,255,255,0.2);
-      box-shadow: 0 0 0 1px rgba(50,145,255,0.40);
+      transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
     }
     .pill {
       display: inline-flex;
@@ -95,15 +90,28 @@ $pageTitle = $title . ' · Yapr';
       padding: 0.375rem 0.75rem;
       font-size: 0.875rem;
       font-weight: 600;
-      transition: all 0.15s;
+      transition: transform 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out);
     }
     .pill:active { transform: scale(0.95); }
+    .btn-primary, .btn-pop {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: transform 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out);
+    }
     .btn-primary { background: #ededed; color: #000; }
-    .btn-primary:hover { background: #ff4500; color: #000; }
     .btn-pop { background: #ff4500; color: #fff; }
-    .btn-pop:hover { background: #d93a00; }
-    .btn-ghost { color: #a1a1a1; }
-    .btn-ghost:hover { background: #161616; color: #ff4500; }
+    .btn-primary:active, .btn-pop:active { transform: scale(0.95); }
+    .btn-ghost { color: #a1a1a1; font-weight: 500; transition: transform 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out); }
+    .btn-ghost:active { transform: scale(0.97); }
+    .btn-primary:focus-visible, .btn-pop:focus-visible, .btn-ghost:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px #ff4500;
+    }
     .vote-rail {
       display: flex;
       width: 3.5rem;
@@ -128,10 +136,9 @@ $pageTitle = $title . ' · Yapr';
       border-radius: 9999px;
       font-size: 1rem;
       line-height: 1;
-      transition: all 0.15s;
+      transition: transform 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out);
     }
-    .vote-btn:hover { background: rgba(255,69,0,0.15); color: #ff4500; }
-    .vote-btn:active { transform: scale(0.9); }
+    .vote-btn:active { transform: scale(0.95); }
     .vote-btn.is-up.is-active { background: #ff4500; color: #000; }
     .vote-btn.is-down.is-active { background: #ededed; color: #000; }
     .vote-score {
@@ -148,7 +155,7 @@ $pageTitle = $title . ' · Yapr';
       background: #0a0a0a;
       padding: 0.5rem 0.75rem;
       color: #ededed;
-      transition: all 0.15s;
+      transition: border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
     }
     .field::placeholder { color: #6b6b6b; }
     .field:focus {
@@ -165,12 +172,19 @@ $pageTitle = $title . ' · Yapr';
       font-weight: 500;
       color: #a1a1a1;
     }
+    @media (hover: hover) and (pointer: fine) {
+      .card:hover { transform: translateY(-0.125rem); border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 1px rgba(50,145,255,0.40); }
+      .btn-primary:hover { background: #ff4500; color: #000; }
+      .btn-pop:hover { background: #d93a00; }
+      .btn-ghost:hover { background: #161616; color: #ff4500; }
+      .vote-btn:hover { background: rgba(255,69,0,0.15); color: #ff4500; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.001ms !important;
         animation-delay: 0ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
+        transition: opacity 150ms ease, color 150ms ease, background 150ms ease, border-color 150ms ease !important;
         scroll-behavior: auto !important;
       }
     }
@@ -178,6 +192,7 @@ $pageTitle = $title . ' · Yapr';
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 </head>
 <body class="h-full">
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-lg focus:bg-pop focus:px-4 focus:py-2 focus:text-white focus:outline-none">Skip to content</a>
 <?php require __DIR__ . '/navbar.php'; ?>
-<main class="relative z-10 mx-auto max-w-5xl animate-fade-in px-4 py-6">
+<main id="main-content" class="relative z-10 mx-auto max-w-5xl animate-fade-in px-4 py-6">
 

@@ -14,6 +14,7 @@ $ogDescription = ($viewed['bio'] ?? '') ?: $viewed['username'] . ' on Yapr';
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="space-y-6">
+  <a href="index.php" class="text-sm text-ink-faint transition hover:text-pop">← Back to feed</a>
   <div class="card animate-fade-in-up flex items-center gap-4 p-5">
     <?= avatarHtml($viewed, 16) ?>
     <div>

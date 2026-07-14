@@ -49,7 +49,7 @@ function postCardHtml(array $post, int $index = 0): string {
     $comments = esc($post['comments_count'] ?? 0);
     $time = esc($post['time'] ?? '');
     $id = (int) ($post['id'] ?? 0);
-    $delay = min($index, 14) * 55;
+    $delay = min($index, 7) * 55;
     $comm = $community !== ''
         ? '<a href="community.php?slug=' . $slug . '" class="font-display font-semibold text-pop transition hover:underline">' . $community . '</a>'
         : '';
@@ -88,7 +88,7 @@ function communityCardHtml(array $c, int $index = 0): string {
     $desc = esc($c['description'] ?? '');
     $members = esc($c['members_count'] ?? 0);
     $initial = esc(mb_strtoupper(mb_substr($c['name'] ?? '', 0, 1)));
-    $delay = min($index, 14) * 55;
+    $delay = min($index, 7) * 55;
     return <<<HTML
     <div class="animate-fade-in-up" style="animation-delay:{$delay}ms">
       <a href="community.php?slug={$slug}" class="card flex items-start gap-3 p-3">
@@ -109,7 +109,7 @@ function commentItemHtml(array $c, int $depth = 0, int $index = 0): string {
     $time = esc($c['time'] ?? '');
     $score = esc($c['score'] ?? 0);
     $indent = $depth > 0 ? 'ml-6 border-l-2 border-line pl-4' : '';
-    $delay = min($index, 14) * 55;
+    $delay = min($index, 7) * 55;
     return <<<HTML
     <div class="animate-fade-in py-3 {$indent}" style="animation-delay:{$delay}ms">
       <div class="flex flex-wrap items-center gap-2 text-xs text-ink-faint">

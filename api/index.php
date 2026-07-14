@@ -12,8 +12,17 @@ require __DIR__ . '/includes/header.php';
 <div class="grid gap-6 md:grid-cols-3">
   <section class="space-y-4 md:col-span-2">
     <div class="flex items-center justify-between">
-      <h1 class="font-display text-2xl font-bold text-ink">Popular posts</h1>
-      <a href="register.php" class="btn-primary">New post</a>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <h1 class="font-display text-2xl font-bold text-ink">Posts</h1>
+        <div class="flex items-center gap-1 text-sm font-medium">
+          <span class="text-pop">Popular</span>
+          <span class="text-line">·</span>
+          <a href="#" class="text-ink-faint transition hover:text-ink">New</a>
+          <span class="text-line">·</span>
+          <a href="#" class="text-ink-faint transition hover:text-ink">Top</a>
+        </div>
+      </div>
+      <a href="#" onclick="return false" class="btn-primary" title="Create a post — coming soon">New post</a>
     </div>
     <?php foreach ($posts as $i => $post): ?>
       <?= postCardHtml($post, $i) ?>
@@ -27,7 +36,7 @@ require __DIR__ . '/includes/header.php';
           <?= communityCardHtml($c, $i) ?>
         <?php endforeach; ?>
       </div>
-      <a href="community.php?slug=<?= esc($communities[0]['slug']) ?>" class="mt-3 block text-sm font-semibold text-pop hover:underline">View all communities →</a>
+      <a href="communities.php" class="mt-3 block text-sm font-semibold text-pop hover:underline">View all communities →</a>
     </div>
   </aside>
 </div>

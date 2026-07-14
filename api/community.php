@@ -22,14 +22,15 @@ $ogDescription = $community['description'];
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="space-y-6">
+  <a href="index.php" class="text-sm text-ink-faint transition hover:text-pop">← Back to feed</a>
   <div class="card animate-fade-in-up overflow-hidden">
-    <div class="h-24 animate-gradient-pan bg-[length:200%_200%] bg-gradient-to-r from-pop via-pop-dark to-ink"></div>
+    <div aria-hidden="true" class="h-24 animate-gradient-pan bg-[length:200%_200%] bg-gradient-to-r from-pop via-pop-dark to-ink"></div>
     <div class="p-4">
       <h1 class="font-display text-2xl font-bold text-ink"><?= esc($community['name']) ?></h1>
       <p class="mt-1 text-sm text-ink-faint"><?= esc($community['description']) ?></p>
       <div class="mt-3 flex items-center gap-3">
         <span class="text-sm text-ink-faint"><?= esc($community['members_count']) ?> members</span>
-        <button class="btn-pop">Join</button>
+        <button type="button" class="btn-pop">Join</button>
       </div>
     </div>
   </div>

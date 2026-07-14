@@ -48,7 +48,7 @@ require __DIR__ . '/includes/header.php';
     <form action="post.php?id=<?= $id ?>" method="post" class="space-y-3">
       <textarea name="body" rows="3" placeholder="What are your thoughts?"
                 class="field"></textarea>
-      <button class="btn-pop">Comment</button>
+      <button type="submit" class="btn-pop">Comment</button>
     </form>
     <div class="mt-5 divide-y divide-line">
       <?php foreach ($postComments as $c): ?>
