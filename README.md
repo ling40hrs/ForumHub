@@ -8,9 +8,6 @@ A Reddit-like forum built with PHP, MySQL, and Tailwind CSS.
 git clone https://github.com/ling40hrs/Yapr.git
 cd Yapr
 
-# Install dependencies
-cd backend && composer install
-
 # Start dev server
 npm run dev
 ```
@@ -44,19 +41,9 @@ Yapr/
 │   ├── community.php   # Community view (?slug=)
 │   ├── post.php        # Single post + comments (?id=)
 │   ├── profile.php     # User profile (?id=)
-│   └── includes/       # header, navbar, footer, helpers, sample-data
-├── backend/            # PHP REST API
-│   ├── config/         # DB & app config
-│   ├── controllers/    # Request handlers
-│   ├── models/         # Business logic & PDO queries
-│   ├── middleware/     # Auth, validation
-│   ├── helpers/        # Response utilities
-│   ├── public/         # index.php entry point
-│   └── routes/         # Route definitions
+│   └── includes/       # header, navbar, footer, helpers, db, auth
 ├── public/             # Static assets (css, fonts, images)
 ├── database/           # SQL schema
-├── bin/                # Setup & seed scripts
-├── Makefile            # Command shortcuts
 ├── router.php          # Dev routing
 ├── package.json        # npm run dev shortcut
 └── VERSION
@@ -67,4 +54,4 @@ Yapr/
 | Resource | Path |
 |----------|------|
 | Database schema | `database/schema.sql` |
-| Error codes | `backend/config/errors.php` |
+| Dev server | `router.php` |
