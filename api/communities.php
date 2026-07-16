@@ -11,7 +11,7 @@ $ogType = 'website';
 $ogDescription = 'Browse all communities on Yapr.';
 require __DIR__ . '/includes/header.php';
 
-$query = trim($_GET['q'] ?? '');
+$query = mysqli_real_escape_string($conn, trim($_GET['q'] ?? ''));
 
 if ($query !== '') {
     $result = mysqli_query($conn, "
@@ -38,7 +38,7 @@ $totalMembers = array_sum(array_column($filtered, 'members_count'));
       <h1 class="font-display text-3xl font-bold text-ink">Communities</h1>
       <p class="mt-1 text-sm text-ink-faint">Find conversations that match your interests.</p>
       <div class="mt-3 flex flex-wrap items-center gap-4 text-sm text-ink-soft">
-        <span><?= count($communities) ?> communities</span>
+        <span><?= count($filtered) ?> communities</span>
         <span class="text-line">&middot;</span>
         <span><?= number_format($totalMembers) ?> members</span>
       </div>

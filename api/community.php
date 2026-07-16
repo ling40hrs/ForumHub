@@ -6,7 +6,7 @@ session_start();
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
-$slug = $_GET['slug'] ?? '';
+$slug = mysqli_real_escape_string($conn, $_GET['slug'] ?? '');
 
 $communityResult = mysqli_query($conn, "
     SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count

@@ -3,8 +3,8 @@
 session_start();
 require __DIR__ . '/includes/db.php';
 
-$username = $_POST["username"] ?? '';
-$email = $_POST["email"] ?? '';
+$username = mysqli_real_escape_string($conn, $_POST["username"] ?? '');
+$email = mysqli_real_escape_string($conn, $_POST["email"] ?? '');
 $password = $_POST["password"] ?? '';
 
 if ($username === '' || $email === '' || $password === '') {
@@ -12,7 +12,8 @@ if ($username === '' || $email === '' || $password === '') {
     exit();
 }
 
-$sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
+$hashed = password_hash($password, PASSWORD_DEFAULT);
+$sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed')";
 
 if (mysqli_query($conn, $sql)) {
     $result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");

@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Root → api/index.php
+RewriteRule ^$ api/index.php [L]
+
+# PHP files → api/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+\.php)$ api/$1 [L]
+
+# Static files → public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ public/$1 [L]

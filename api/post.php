@@ -9,7 +9,7 @@ require __DIR__ . '/includes/helpers.php';
 $id = (int) ($_GET['id'] ?? 0);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user'])) {
-    $body = $_POST['body'] ?? '';
+    $body = mysqli_real_escape_string($conn, $_POST['body'] ?? '');
     $userId = (int) $_SESSION['user']['id'];
     if ($body !== '') {
         mysqli_query($conn, "INSERT INTO comments (body, user_id, post_id) VALUES ('$body', $userId, $id)");

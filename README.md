@@ -7,12 +7,9 @@ A Reddit-like forum built with PHP, MySQL, and Tailwind CSS.
 ```bash
 git clone https://github.com/ling40hrs/Yapr.git
 cd Yapr
-
-# Start dev server
-npm run dev
 ```
 
-Open http://localhost:8000. The PHP router serves pages from `api/` and static assets from `public/`.
+Place the project folder in XAMPP `htdocs/` and access via `http://localhost/ForumHub/`. Apache serves pages from `api/` and static assets from `public/` via `.htaccess`.
 
 ## Tech Stack
 
@@ -44,8 +41,6 @@ Yapr/
 │   └── includes/       # header, navbar, footer, helpers, db, auth
 ├── public/             # Static assets (css, fonts, images)
 ├── database/           # SQL schema
-├── router.php          # Dev routing
-├── package.json        # npm run dev shortcut
 └── VERSION
 ```
 
@@ -54,4 +49,3 @@ Yapr/
 | Resource | Path |
 |----------|------|
 | Database schema | `database/schema.sql` |
-| Dev server | `router.php` |

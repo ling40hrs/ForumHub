@@ -10,8 +10,8 @@ require __DIR__ . '/includes/helpers.php';
 requireLogin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'] ?? '';
-    $body = $_POST['body'] ?? '';
+    $title = mysqli_real_escape_string($conn, $_POST['title'] ?? '');
+    $body = mysqli_real_escape_string($conn, $_POST['body'] ?? '');
     $communityId = (int) ($_POST['community_id'] ?? 0);
     $userId = (int) $_SESSION['user']['id'];
 
