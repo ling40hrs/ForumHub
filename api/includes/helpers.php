@@ -1,64 +1,78 @@
 <?php
 
-declare(strict_types=1);
-
-// Presentation helpers for the Yapr static frontend (no framework).
-
 function timeAgo(string $datetime): string {
     $timestamp = strtotime($datetime);
     $diff = time() - $timestamp;
-    if ($diff < 60) return 'just now';
-    if ($diff < 3600) return floor($diff / 60) . 'm';
-    if ($diff < 86400) return floor($diff / 3600) . 'h';
-    if ($diff < 604800) return floor($diff / 86400) . 'd';
+
+    if ($diff < 60) {
+        return 'just now';
+    }
+
+    if ($diff < 3600) {
+        return floor($diff / 60) . 'm';
+    }
+
+    if ($diff < 86400) {
+        return floor($diff / 3600) . 'h';
+    }
+
+    if ($diff < 604800) {
+        return floor($diff / 86400) . 'd';
+    }
+
     return date('M j', $timestamp);
 }
 
-function esc($value): string {
+function escapeHtml($value): string {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
 function avatarHtml(array $user, int $size = 10): string {
     $username = $user['username'] ?? 'guest';
-    $initial = esc(mb_strtoupper(mb_substr($username, 0, 1)));
-    $color = esc($user['avatar_color'] ?? '#ff4500');
+
+    $initial = mb_strtoupper(mb_substr($username, 0, 1));
+    $initial = escapeHtml($initial);
+
+    $color = escapeHtml($user['avatar_color'] ?? '#ff4500');
+
     $px = $size * 4;
 
-    $initialCircle = sprintf(
-        '<div style="width:%1$dpx;height:%1$dpx;background-color:%2$s"'
-        . ' class="flex items-center justify-center rounded-full border-2 border-line text-white font-semibold animate-scale-in">%3$s</div>',
-        $px, $color, $initial
-    );
+    $initialCircle = '<div style="width:' . $px . 'px;height:' . $px . 'px;background-color:' . $color . '"';
+    $initialCircle .= ' class="flex items-center justify-center rounded-full border-2 border-line text-white font-semibold">';
+    $initialCircle .= $initial . '</div>';
 
-    $url = $user['avatar_url'] ?? '';
-    if ($url === '') {
-        $url = 'https://api.dicebear.com/9.x/bottts/svg?seed=' . rawurlencode($username);
+    $avatarUrl = $user['avatar_url'] ?? '';
+
+    if ($avatarUrl === '') {
+        return $initialCircle;
     }
 
-    $fallback = "'" . str_replace('"', '&quot;', $initialCircle) . "'";
-    return sprintf(
-        '<img src="%1$s" alt="%2$s" width="%3$d" height="%3$d" loading="lazy"'
-        . ' style="width:%3$dpx;height:%3$dpx;object-fit:cover;border-radius:9999px"'
-        . ' class="rounded-full border-2 border-line object-cover"'
-        . ' onerror="this.onerror=null;this.outerHTML=%4$s">',
-        esc($url), esc($username), $px, $fallback
-    );
+    $result = '<img src="' . escapeHtml($avatarUrl) . '" alt="' . escapeHtml($username) . '"';
+    $result .= ' width="' . $px . '" height="' . $px . '" loading="lazy">';
+
+    return $result;
 }
 
 function postCardHtml(array $post, int $index = 0): string {
     $author = $post['author']['username'] ?? 'unknown';
-    $community = esc($post['community'] ?? '');
-    $slug = esc($post['community_slug'] ?? '');
-    $title = esc($post['title'] ?? '');
-    $excerpt = esc(mb_substr($post['body'] ?? '', 0, 160));
-    $score = esc($post['score'] ?? 0);
-    $comments = esc($post['comments_count'] ?? 0);
-    $time = esc($post['time'] ?? '');
-    $id = (int) ($post['id'] ?? 0);
+    $community = escapeHtml($post['community'] ?? '');
+    $slug = escapeHtml($post['community_slug'] ?? '');
+    $title = escapeHtml($post['title'] ?? '');
+    $excerpt = escapeHtml(mb_substr($post['body'] ?? '', 0, 160));
+    $score = escapeHtml($post['score'] ?? 0);
+    $comments = escapeHtml($post['comments_count'] ?? 0);
+    $time = escapeHtml($post['time'] ?? '');
+    $id = intval($post['id'] ?? 0);
     $delay = min($index, 7) * 55;
-    $comm = $community !== ''
-        ? '<a href="community.php?slug=' . $slug . '" class="font-display font-semibold text-pop transition hover:underline">' . $community . '</a>'
-        : '';
+
+    if ($community !== '') {
+        $communityLink = '<a href="community.php?slug=' . $slug . '"'
+            . ' class="font-display font-semibold text-pop transition hover:underline">'
+            . $community . '</a>';
+    } else {
+        $communityLink = '';
+    }
+
     return <<<HTML
     <div class="reveal" style="--reveal-delay:{$delay}ms">
       <article class="card flex overflow-hidden">
@@ -69,7 +83,7 @@ function postCardHtml(array $post, int $index = 0): string {
         </div>
         <div class="min-w-0 flex-1 p-4">
           <div class="mb-2 flex flex-wrap items-center gap-2 text-sm text-ink-faint">
-            {$comm}
+            {$communityLink}
             <span>·</span>
             <span>Posted by <span class="font-medium text-ink-soft">{$author}</span></span>
             <span>·</span>
@@ -89,12 +103,13 @@ HTML;
 }
 
 function communityCardHtml(array $c, int $index = 0): string {
-    $name = esc($c['name'] ?? '');
-    $slug = esc($c['slug'] ?? '');
-    $desc = esc($c['description'] ?? '');
-    $members = esc($c['members_count'] ?? 0);
-    $initial = esc(mb_strtoupper(mb_substr($c['name'] ?? '', 0, 1)));
+    $name = escapeHtml($c['name'] ?? '');
+    $slug = escapeHtml($c['slug'] ?? '');
+    $desc = escapeHtml($c['description'] ?? '');
+    $members = escapeHtml($c['members_count'] ?? 0);
+    $initial = escapeHtml(mb_strtoupper(mb_substr($c['name'] ?? '', 0, 1)));
     $delay = min($index, 7) * 55;
+
     return <<<HTML
     <div class="reveal" style="--reveal-delay:{$delay}ms">
       <a href="community.php?slug={$slug}" class="card flex items-start gap-3 p-3">
@@ -111,11 +126,18 @@ HTML;
 
 function commentItemHtml(array $c, int $depth = 0, int $index = 0): string {
     $author = $c['author']['username'] ?? 'unknown';
-    $body = esc($c['body'] ?? '');
-    $time = esc($c['time'] ?? '');
-    $score = esc($c['score'] ?? 0);
-    $indent = $depth > 0 ? 'ml-6 border-l-2 border-line pl-4' : '';
+    $body = escapeHtml($c['body'] ?? '');
+    $time = escapeHtml($c['time'] ?? '');
+    $score = escapeHtml($c['score'] ?? 0);
+
+    if ($depth > 0) {
+        $indent = 'ml-6 border-l-2 border-line pl-4';
+    } else {
+        $indent = '';
+    }
+
     $delay = min($index, 7) * 55;
+
     return <<<HTML
     <div class="reveal py-3 {$indent}" style="--reveal-delay:{$delay}ms">
       <div class="flex flex-wrap items-center gap-2 text-xs text-ink-faint">

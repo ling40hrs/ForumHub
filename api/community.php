@@ -1,12 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 session_start();
+
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
-$slug = mysqli_real_escape_string($conn, $_GET['slug'] ?? '');
+if (isset($_GET['slug'])) {
+    $slug = mysqli_real_escape_string($conn, $_GET['slug']);
+} else {
+    $slug = '';
+}
 
 $communityResult = mysqli_query($conn, "
     SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count
@@ -32,7 +35,9 @@ $postsResult = mysqli_query($conn, "
     WHERE p.community_id = {$community['id']}
     ORDER BY p.created_at DESC
 ");
+
 $communityPosts = [];
+
 while ($row = mysqli_fetch_assoc($postsResult)) {
     $row['author'] = ['username' => $row['author_username']];
     $row['community'] = $community['name'];
@@ -45,6 +50,7 @@ while ($row = mysqli_fetch_assoc($postsResult)) {
 $title = $community['name'];
 $ogType = 'website';
 $ogDescription = $community['description'];
+
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="space-y-6">
@@ -52,16 +58,16 @@ require __DIR__ . '/includes/header.php';
   <div class="card animate-fade-in-up overflow-hidden">
     <div aria-hidden="true" class="h-24 animate-gradient-pan bg-[length:200%_200%] bg-gradient-to-r from-pop via-pop-dark to-ink"></div>
     <div class="p-4">
-      <h1 class="font-display text-2xl font-bold text-ink"><?= esc($community['name']) ?></h1>
-      <p class="mt-1 text-sm text-ink-faint"><?= esc($community['description']) ?></p>
+      <h1 class="font-display text-2xl font-bold text-ink"><?= escapeHtml($community['name']) ?></h1>
+      <p class="mt-1 text-sm text-ink-faint"><?= escapeHtml($community['description']) ?></p>
       <div class="mt-3 flex items-center gap-3">
-        <span class="text-sm text-ink-faint"><?= esc($community['members_count']) ?> members</span>
+        <span class="text-sm text-ink-faint"><?= escapeHtml($community['members_count']) ?> members</span>
         <button type="button" class="btn-pop">Join</button>
       </div>
     </div>
   </div>
   <section class="space-y-4">
-    <?php foreach (array_values($communityPosts) as $i => $post): ?>
+    <?php foreach ($communityPosts as $i => $post): ?>
       <?= postCardHtml($post, $i) ?>
     <?php endforeach; ?>
     <?php if (empty($communityPosts)): ?>
@@ -70,4 +76,3 @@ require __DIR__ . '/includes/header.php';
   </section>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>
-

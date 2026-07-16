@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 session_start();
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
@@ -51,7 +49,7 @@ $totalMembers = array_sum(array_column($filtered, 'members_count'));
       <svg aria-hidden="true" class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.3-4.3"/></svg>
       <input type="search" id="community-search" name="q"
              placeholder="Search communities…"
-             value="<?= esc($query) ?>"
+             value="<?= escapeHtml($query) ?>"
              class="field rounded-full pl-9">
     </div>
   </form>
@@ -59,17 +57,17 @@ $totalMembers = array_sum(array_column($filtered, 'members_count'));
   <?php if (empty($filtered)): ?>
     <div class="card reveal p-12 text-center">
       <p class="font-display text-lg font-semibold text-ink">No results found</p>
-      <p class="mt-1 text-sm text-ink-faint">No communities match "<?= esc($query) ?>". Try a different search.</p>
+      <p class="mt-1 text-sm text-ink-faint">No communities match "<?= escapeHtml($query) ?>". Try a different search.</p>
       <a href="communities.php" class="btn-pop mt-4 inline-flex">Clear search</a>
     </div>
   <?php else: ?>
     <div class="grid gap-4 sm:grid-cols-2">
       <?php foreach ($filtered as $i => $c):
-        $name = esc($c['name']);
-        $slug = esc($c['slug']);
-        $desc = esc($c['description']);
-        $members = esc(number_format($c['members_count']));
-        $initial = esc(mb_strtoupper(mb_substr($c['name'], 0, 1)));
+        $name = escapeHtml($c['name']);
+        $slug = escapeHtml($c['slug']);
+        $desc = escapeHtml($c['description']);
+        $members = escapeHtml(number_format(intval($c['members_count'])));
+        $initial = escapeHtml(mb_strtoupper(mb_substr($c['name'], 0, 1)));
         $delay = ($i + 1) * 70;
       ?>
         <div class="reveal" style="--reveal-delay:<?= $delay ?>ms">

@@ -1,18 +1,28 @@
 <?php
 
-declare(strict_types=1);
-
 session_start();
+
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
-$id = (int) ($_GET['id'] ?? 0);
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+} else {
+    $id = 0;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user'])) {
-    $body = mysqli_real_escape_string($conn, $_POST['body'] ?? '');
-    $userId = (int) $_SESSION['user']['id'];
+    if (isset($_POST['body'])) {
+        $body = mysqli_real_escape_string($conn, $_POST['body']);
+    } else {
+        $body = '';
+    }
+
+    $userId = intval($_SESSION['user']['id']);
+
     if ($body !== '') {
-        mysqli_query($conn, "INSERT INTO comments (body, user_id, post_id) VALUES ('$body', $userId, $id)");
+        mysqli_query($conn, "INSERT INTO comments (body, user_id, post_id)
+                             VALUES ('$body', $userId, $id)");
         header("Location: post.php?id=$id");
         exit();
     }
@@ -38,10 +48,10 @@ if (mysqli_num_rows($postResult) == 0) {
 }
 
 $post = mysqli_fetch_assoc($postResult);
+
 $post['author'] = ['username' => $post['author_username']];
 $post['community'] = $post['community_name'];
 $post['time'] = timeAgo($post['created_at']);
-$post['comments_count'] = $post['comments_count'] ?? 0;
 
 $commentsResult = mysqli_query($conn, "
     SELECT c.*, u.username AS author_username
@@ -50,7 +60,9 @@ $commentsResult = mysqli_query($conn, "
     WHERE c.post_id = $id
     ORDER BY c.created_at ASC
 ");
+
 $postComments = [];
+
 while ($row = mysqli_fetch_assoc($commentsResult)) {
     $row['author'] = ['username' => $row['author_username']];
     $row['time'] = timeAgo($row['created_at']);
@@ -59,29 +71,35 @@ while ($row = mysqli_fetch_assoc($commentsResult)) {
 
 $title = $post['title'];
 $ogType = 'article';
-$ogDescription = mb_substr($post['body'] ?? '', 0, 200);
+
+if (isset($post['body'])) {
+    $ogDescription = mb_substr($post['body'], 0, 200);
+} else {
+    $ogDescription = '';
+}
+
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="space-y-6">
   <div class="progress-bar" aria-hidden="true"></div>
   <a href="index.php" class="text-sm text-ink-faint transition hover:text-pop">← Back to feed</a>
   <article class="card flex reveal overflow-hidden">
-    <div class="vote-rail" data-score="<?= esc($post['score']) ?>">
+    <div class="vote-rail" data-score="<?= escapeHtml($post['score']) ?>">
       <button type="button" class="vote-btn is-up" aria-label="Upvote">▲</button>
-      <span class="vote-score"><?= esc($post['score']) ?></span>
+      <span class="vote-score"><?= escapeHtml($post['score']) ?></span>
       <button type="button" class="vote-btn is-down" aria-label="Downvote">▼</button>
     </div>
     <div class="min-w-0 flex-1 p-5">
       <div class="mb-2 flex flex-wrap items-center gap-2 text-sm text-ink-faint">
-        <span class="font-display font-semibold text-pop"><?= esc($post['community']) ?></span>
-        <span>·</span><span>Posted by <?= esc($post['author']['username']) ?></span>
-        <span>·</span><span><?= esc($post['time']) ?></span>
+        <span class="font-display font-semibold text-pop"><?= escapeHtml($post['community']) ?></span>
+        <span>·</span><span>Posted by <?= escapeHtml($post['author']['username']) ?></span>
+        <span>·</span><span><?= escapeHtml($post['time']) ?></span>
       </div>
-      <h1 class="font-display text-2xl font-bold leading-tight text-ink"><?= esc($post['title']) ?></h1>
-      <p class="mt-3 whitespace-pre-line text-ink-soft"><?= esc($post['body']) ?></p>
+      <h1 class="font-display text-2xl font-bold leading-tight text-ink"><?= escapeHtml($post['title']) ?></h1>
+      <p class="mt-3 whitespace-pre-line text-ink-soft"><?= escapeHtml($post['body']) ?></p>
       <div class="mt-4 flex items-center gap-4 text-sm text-ink-faint">
-        <span class="flex items-center gap-1 rounded-full bg-night-raised px-3 py-1">▲ <?= esc($post['score']) ?></span>
-        <span>💬 <?= esc($post['comments_count']) ?> comments</span>
+        <span class="flex items-center gap-1 rounded-full bg-night-raised px-3 py-1">▲ <?= escapeHtml($post['score']) ?></span>
+        <span>💬 <?= escapeHtml($post['comments_count']) ?> comments</span>
       </div>
     </div>
   </article>
@@ -103,4 +121,3 @@ require __DIR__ . '/includes/header.php';
   </section>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>
-

@@ -1,12 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 session_start();
+
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
-$id = (int) ($_GET['id'] ?? $_SESSION['user']['id'] ?? 0);
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+} elseif (isset($_SESSION['user']['id'])) {
+    $id = intval($_SESSION['user']['id']);
+} else {
+    $id = 0;
+}
 
 $userResult = mysqli_query($conn, "
     SELECT id, username, avatar AS avatar_url, bio, karma, created_at
@@ -34,20 +39,27 @@ $postsResult = mysqli_query($conn, "
     WHERE p.user_id = $id
     ORDER BY p.created_at DESC
 ");
+
 $userPosts = [];
+
 while ($row = mysqli_fetch_assoc($postsResult)) {
     $row['author'] = ['username' => $row['author_username']];
     $row['community'] = $row['community_name'];
     $row['community_slug'] = $row['community_slug'];
     $row['time'] = timeAgo($row['created_at']);
     $row['author_id'] = $row['user_id'];
-    $row['comments_count'] = $row['comments_count'] ?? 0;
     $userPosts[] = $row;
 }
 
 $title = $viewed['username'];
 $ogType = 'profile';
-$ogDescription = ($viewed['bio'] ?? '') ?: $viewed['username'] . ' on Yapr';
+
+if (isset($viewed['bio']) && $viewed['bio'] !== '') {
+    $ogDescription = $viewed['bio'];
+} else {
+    $ogDescription = $viewed['username'] . ' on Yapr';
+}
+
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="space-y-6">
@@ -55,14 +67,16 @@ require __DIR__ . '/includes/header.php';
   <div class="card reveal flex items-center gap-4 p-5">
     <?= avatarHtml($viewed, 16) ?>
     <div>
-      <h1 class="font-display text-2xl font-bold text-ink"><?= esc($viewed['username']) ?></h1>
-      <p class="text-sm text-ink-faint"><?= esc($viewed['karma']) ?> karma</p>
+      <h1 class="font-display text-2xl font-bold text-ink"><?= escapeHtml($viewed['username']) ?></h1>
+      <p class="text-sm text-ink-faint"><?= escapeHtml($viewed['karma']) ?> karma</p>
     </div>
   </div>
-  <p class="card -mt-3 p-5 text-ink-soft"><?= esc($viewed['bio'] ?? '') ?></p>
+  <?php if (isset($viewed['bio']) && $viewed['bio'] !== ''): ?>
+    <p class="card -mt-3 p-5 text-ink-soft"><?= escapeHtml($viewed['bio']) ?></p>
+  <?php endif; ?>
   <section class="space-y-4">
     <h2 class="font-display text-lg font-semibold text-ink">Posts</h2>
-    <?php foreach (array_values($userPosts) as $i => $post): ?>
+    <?php foreach ($userPosts as $i => $post): ?>
       <?= postCardHtml($post, $i) ?>
     <?php endforeach; ?>
     <?php if (empty($userPosts)): ?>
@@ -71,4 +85,3 @@ require __DIR__ . '/includes/header.php';
   </section>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>
-

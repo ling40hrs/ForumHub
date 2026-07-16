@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 require __DIR__ . '/includes/helpers.php';
 $title = 'Sign up';
 require __DIR__ . '/includes/header.php';
@@ -12,7 +10,11 @@ require __DIR__ . '/includes/header.php';
     <p class="mb-6 text-sm text-ink-faint">Join Yapr and start posting.</p>
     <?php if (isset($_GET['error'])): ?>
       <p class="mb-4 rounded-xl bg-pop-tint px-4 py-2 text-sm font-medium text-pop">
-        <?= $_GET['error'] == 1 ? 'All fields are required.' : 'Username or email already taken.' ?>
+        <?php if ($_GET['error'] === '1'): ?>
+          All fields are required.
+        <?php else: ?>
+          Username or email already taken.
+        <?php endif; ?>
       </p>
     <?php endif; ?>
     <form action="register-handler.php" method="post" class="space-y-4">
@@ -40,4 +42,3 @@ require __DIR__ . '/includes/header.php';
   </div>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>
-

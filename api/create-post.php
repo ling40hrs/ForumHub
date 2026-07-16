@@ -1,8 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
 session_start();
+
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/helpers.php';
@@ -10,10 +9,25 @@ require __DIR__ . '/includes/helpers.php';
 requireLogin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = mysqli_real_escape_string($conn, $_POST['title'] ?? '');
-    $body = mysqli_real_escape_string($conn, $_POST['body'] ?? '');
-    $communityId = (int) ($_POST['community_id'] ?? 0);
-    $userId = (int) $_SESSION['user']['id'];
+    if (isset($_POST['title'])) {
+        $title = mysqli_real_escape_string($conn, $_POST['title']);
+    } else {
+        $title = '';
+    }
+
+    if (isset($_POST['body'])) {
+        $body = mysqli_real_escape_string($conn, $_POST['body']);
+    } else {
+        $body = '';
+    }
+
+    if (isset($_POST['community_id'])) {
+        $communityId = intval($_POST['community_id']);
+    } else {
+        $communityId = 0;
+    }
+
+    $userId = intval($_SESSION['user']['id']);
 
     if ($title === '' || $body === '' || $communityId === 0) {
         $error = 'All fields are required.';
@@ -40,7 +54,7 @@ require __DIR__ . '/includes/header.php';
     <p class="mb-6 text-sm text-ink-faint">Share something with the community.</p>
 
     <?php if (isset($error)): ?>
-      <p class="mb-4 rounded-xl bg-pop-tint px-4 py-2 text-sm font-medium text-pop"><?= esc($error) ?></p>
+      <p class="mb-4 rounded-xl bg-pop-tint px-4 py-2 text-sm font-medium text-pop"><?= escapeHtml($error) ?></p>
     <?php endif; ?>
 
     <form method="post" class="space-y-4">
@@ -49,7 +63,7 @@ require __DIR__ . '/includes/header.php';
         <select name="community_id" required class="field">
           <option value="">Choose a community</option>
           <?php while ($c = mysqli_fetch_assoc($communitiesResult)): ?>
-            <option value="<?= esc($c['id']) ?>"><?= esc($c['name']) ?></option>
+            <option value="<?= escapeHtml($c['id']) ?>"><?= escapeHtml($c['name']) ?></option>
           <?php endwhile; ?>
         </select>
       </div>

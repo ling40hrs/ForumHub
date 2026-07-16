@@ -1,8 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
-// Top navigation. Uses $_SESSION['user'] (may be empty for logged-out state).
 $user = $_SESSION['user'] ?? null;
 ?>
 <header class="sticky top-0 z-20 border-b border-line bg-night/90 backdrop-blur">
@@ -21,8 +18,8 @@ $user = $_SESSION['user'] ?? null;
     <div class="ml-auto flex items-center gap-2 text-sm">
       <?php if (!empty($user)): ?>
         <?= avatarHtml($user, 9) ?>
-        <a href="profile.php?id=<?= esc($user['id']) ?>" class="hidden font-semibold text-ink transition hover:text-pop sm:block"><?= esc($user['username']) ?></a>
-        <a href="login.php?action=logout" class="btn-ghost">Log out</a>
+        <a href="profile.php?id=<?= escapeHtml($user['id']) ?>" class="hidden font-semibold text-ink transition hover:text-pop sm:block"><?= escapeHtml($user['username']) ?></a>
+        <a href="logout.php" class="btn-ghost">Log out</a>
       <?php else: ?>
         <a href="login.php" class="btn-ghost">Log in</a>
         <a href="register.php" class="btn-primary">Sign up</a>
@@ -30,4 +27,3 @@ $user = $_SESSION['user'] ?? null;
     </div>
   </nav>
 </header>
-

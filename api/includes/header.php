@@ -1,8 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
-// Shared document head + opening body. Expects $title to be set by the page.
 if (!isset($title)) {
     $title = 'Home';
 }
@@ -16,20 +13,19 @@ $pageTitle = $title . ' · Yapr';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#000000">
-  <script>history.scrollRestoration='manual';window.scrollTo(0,0);</script>
-  <title><?= esc($pageTitle) ?></title>
-  <meta name="description" content="<?= esc($ogDescription) ?>">
+  <title><?= escapeHtml($pageTitle) ?></title>
+  <meta name="description" content="<?= escapeHtml($ogDescription) ?>">
   <meta property="og:site_name" content="Yapr">
-  <meta property="og:type" content="<?= esc($ogType) ?>">
-  <meta property="og:title" content="<?= esc($pageTitle) ?>">
-  <meta property="og:description" content="<?= esc($ogDescription) ?>">
+  <meta property="og:type" content="<?= escapeHtml($ogType) ?>">
+  <meta property="og:title" content="<?= escapeHtml($pageTitle) ?>">
+  <meta property="og:description" content="<?= escapeHtml($ogDescription) ?>">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="<?= esc($pageTitle) ?>">
-  <meta name="twitter:description" content="<?= esc($ogDescription) ?>">
+  <meta name="twitter:title" content="<?= escapeHtml($pageTitle) ?>">
+  <meta name="twitter:description" content="<?= escapeHtml($ogDescription) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwind.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -193,8 +189,6 @@ $pageTitle = $title . ' · Yapr';
   <link rel="stylesheet" href="css/polish.css">
 </head>
 <body class="h-full">
-<svg aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:9999;pointer-events:none;opacity:0.035;mix-blend-mode:overlay"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grain)"/></svg>
 <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-lg focus:bg-pop focus:px-4 focus:py-2 focus:text-white focus:outline-none">Skip to content</a>
 <?php require __DIR__ . '/navbar.php'; ?>
 <main id="main-content" class="relative z-10 mx-auto max-w-5xl animate-fade-in px-4 py-6">
-

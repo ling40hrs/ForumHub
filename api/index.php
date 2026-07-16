@@ -1,10 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
 session_start();
+
+// This lets us load files from other folders reliably
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
+
+if (isset($_GET['sort'])) {
+    $sort = $_GET['sort'];
+} else {
+    $sort = 'new';
+}
+
+if ($sort === 'popular') {
+    $orderBy = 'p.score DESC';
+} elseif ($sort === 'top') {
+    $orderBy = 'p.score DESC, p.created_at DESC';
+} else {
+    $orderBy = 'p.created_at DESC';
+}
 
 $postsResult = mysqli_query($conn, "
     SELECT p.*, u.username AS author_username,
@@ -13,14 +27,14 @@ $postsResult = mysqli_query($conn, "
     FROM posts p
     JOIN users u ON p.user_id = u.id
     JOIN communities c ON p.community_id = c.id
-    ORDER BY p.created_at DESC
+    ORDER BY $orderBy
 ");
+
 $posts = [];
+
 while ($row = mysqli_fetch_assoc($postsResult)) {
     $row['author'] = ['username' => $row['author_username']];
     $row['community'] = $row['community_name'];
-    $row['comments_count'] = $row['comments_count'] ?? 0;
-    $row['author_id'] = $row['user_id'];
     $row['time'] = timeAgo($row['created_at']);
     $posts[] = $row;
 }
@@ -29,7 +43,9 @@ $communitiesResult = mysqli_query($conn, "
     SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count
     FROM communities c ORDER BY c.name ASC
 ");
+
 $communities = [];
+
 while ($row = mysqli_fetch_assoc($communitiesResult)) {
     $communities[] = $row;
 }
@@ -37,6 +53,7 @@ while ($row = mysqli_fetch_assoc($communitiesResult)) {
 $title = 'Home';
 $ogType = 'website';
 $ogDescription = 'Yapr — a community where people yap about what they love.';
+
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="grid gap-6 md:grid-cols-3">
@@ -45,11 +62,14 @@ require __DIR__ . '/includes/header.php';
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
         <h1 class="font-display text-2xl font-bold text-ink">Posts</h1>
         <div class="flex items-center gap-1 text-sm font-medium">
-          <span class="text-pop">Popular</span>
+          <a href="?sort=popular"
+             class="<?= $sort === 'popular' ? 'text-pop' : 'text-ink-faint' ?> transition hover:text-ink">Popular</a>
           <span class="text-line">·</span>
-          <a href="#" class="text-ink-faint transition hover:text-ink">New</a>
+          <a href="?sort=new"
+             class="<?= $sort === 'new' ? 'text-pop' : 'text-ink-faint' ?> transition hover:text-ink">New</a>
           <span class="text-line">·</span>
-          <a href="#" class="text-ink-faint transition hover:text-ink">Top</a>
+          <a href="?sort=top"
+             class="<?= $sort === 'top' ? 'text-pop' : 'text-ink-faint' ?> transition hover:text-ink">Top</a>
         </div>
       </div>
       <?php if (isset($_SESSION['user'])): ?>
@@ -73,4 +93,3 @@ require __DIR__ . '/includes/header.php';
   </aside>
 </div>
 <?php require __DIR__ . '/includes/footer.php'; ?>
-
