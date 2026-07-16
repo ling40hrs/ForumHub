@@ -1,0 +1,79 @@
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+@media (max-width: 1023px) {
+  body { overflow-x: hidden; }
+
+  .fab-btn {
+    transition: transform 0.12s var(--ease-out, ease-out);
+    box-shadow: 0 8px 18px -6px rgba(217, 58, 0, 0.55);
+  }
+  .fab-btn:active { transform: translateX(-50%) translateY(-50%) scale(0.92); }
+
+  main { animation: fade-in 0.18s ease-out; }
+
+  .comment-thread .comment-thread { margin-left: 14px; }
+
+  #tab-bar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  #tab-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-pill {
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: #a1a1a1;
+  }
+  .tab-pill.is-active {
+    border-bottom-color: #ff4500;
+    color: #ededed;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tab-pill {
+    border: 1px solid #262626;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #a1a1a1;
+    border-bottom-width: 1px;
+  }
+  .tab-pill.is-active {
+    border-color: #ff4500;
+    background: #161616;
+    color: #ededed;
+  }
+  .tab-pill.is-active .dot {
+    background-color: #ff4500;
+  }
+  .tab-pill:not(.is-active) .dot {
+    background-color: #6b6b6b;
+  }
+  .tab-pill:not(.is-active):hover {
+    border-color: #ff4500;
+    background: #161616;
+    color: #ededed;
+  }
+}
+
+@media (max-width: 640px) {
+  .vote-btn { height: 1.5rem; width: 1.5rem; font-size: 0.9rem; }
+}
+
+@media (max-width: 1023px) {
+  .vote-rail {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    background: transparent;
+    border-right: none;
+    border-top: 1px solid #262626;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 0.625rem 1rem;
+  }
+}

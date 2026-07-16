@@ -45,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $communitiesResult = mysqli_query($conn, "SELECT id, name FROM communities ORDER BY name ASC");
 
 $title = 'Create post';
+$noSidebar = true;
+$noBottomNav = true;
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="mx-auto max-w-2xl">

@@ -4,6 +4,8 @@ session_start();
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
+$currentUserId = intval($_SESSION['user']['id'] ?? 0);
+
 $title = 'Communities';
 $ogType = 'website';
 $ogDescription = 'Browse all communities on Yapr.';
@@ -25,7 +27,10 @@ if ($query !== '') {
     ");
 }
 $filtered = mysqli_fetch_all($result, MYSQLI_ASSOC);
-$totalMembers = array_sum(array_column($filtered, 'members_count'));
+$totalMembers = 0;
+foreach ($filtered as $c) {
+    $totalMembers += intval($c['members_count']);
+}
 ?>
 <div class="space-y-6">
   <a href="index.php" class="text-sm text-ink-faint transition hover:text-pop">&larr; Back to feed</a>
@@ -70,19 +75,38 @@ $totalMembers = array_sum(array_column($filtered, 'members_count'));
         $initial = escapeHtml(mb_strtoupper(mb_substr($c['name'], 0, 1)));
         $delay = ($i + 1) * 70;
       ?>
-        <div class="reveal" style="--reveal-delay:<?= $delay ?>ms">
-          <a href="community.php?slug=<?= $slug ?>" class="card group flex gap-4 p-4">
+      <div class="reveal" style="--reveal-delay:<?= $delay ?>ms">
+        <div class="card overflow-hidden">
+          <?php if (!empty($c['background_url'])): ?>
+          <div aria-hidden="true" class="relative h-16 overflow-hidden bg-night">
+            <div aria-hidden="true" class="absolute inset-0 animate-gradient-pan bg-[length:200%_200%] bg-gradient-to-r from-pop via-pop-dark to-ink"></div>
+            <img src="<?= escapeHtml($c['background_url']) ?>" alt=""
+                 class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700"
+                 onload="this.style.opacity='1'" onerror="this.style.display='none'"
+                 loading="lazy">
+          </div>
+          <?php endif; ?>
+          <div class="flex items-center gap-4 p-4">
+          <a href="community.php?slug=<?= $slug ?>" class="group flex min-w-0 flex-1 items-center gap-4">
             <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-pop font-display text-xl font-black text-white transition duration-300 group-hover:scale-110"><?= $initial ?></span>
             <div class="min-w-0 flex-1">
               <h2 class="font-display text-lg font-semibold text-ink transition group-hover:text-pop"><?= $name ?></h2>
               <p class="mt-1 line-clamp-2 text-sm leading-relaxed text-ink-faint"><?= $desc ?></p>
-              <div class="mt-2 flex items-center gap-2">
-                <span class="text-xs font-medium text-ink-soft"><?= $members ?> members</span>
-                <button type="button" class="btn-pop !py-1 !px-3 !text-xs">Join</button>
-              </div>
+              <p class="mt-2 text-xs font-medium text-ink-soft"><?= $members ?> members</p>
             </div>
           </a>
+          <?php $isMember = $currentUserId ? isCommunityMember($conn, $currentUserId, intval($c['id'])) : false; ?>
+          <?php if (isset($_SESSION['user'])): ?>
+          <form action="join-community-handler.php" method="post" class="shrink-0">
+            <input type="hidden" name="community_id" value="<?= intval($c['id']) ?>">
+            <button type="submit" class="btn-pop !py-1 !px-3 !text-xs"><?= $isMember ? 'Leave' : 'Join' ?></button>
+          </form>
+          <?php else: ?>
+            <a href="login.php" class="btn-pop !py-1 !px-3 !text-xs shrink-0">Join</a>
+          <?php endif; ?>
         </div>
+      </div>
+      </div>
       <?php endforeach; ?>
     </div>
   <?php endif; ?>

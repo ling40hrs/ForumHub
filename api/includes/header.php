@@ -11,7 +11,7 @@ $pageTitle = $title . ' · Yapr';
 <html lang="en" class="h-full dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <title><?= escapeHtml($pageTitle) ?></title>
   <meta name="description" content="<?= escapeHtml($ogDescription) ?>">
@@ -25,7 +25,7 @@ $pageTitle = $title . ' · Yapr';
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="js/tailwind.min.js"></script>
+  <script src="/ForumHub/public/js/tailwind.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -75,6 +75,7 @@ $pageTitle = $title . ' · Yapr';
       border-radius: 1rem;
       border: 1px solid #262626;
       background: #0a0a0a;
+      color: #ededed;
       transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
     }
     .pill {
@@ -89,6 +90,7 @@ $pageTitle = $title . ' · Yapr';
       transition: transform 150ms var(--ease-out), background 150ms var(--ease-out), color 150ms var(--ease-out);
     }
     .pill:active { transform: scale(0.95); }
+    .pill.active { background: #ff4500; color: #fff; }
     .btn-primary, .btn-pop {
       display: inline-flex;
       align-items: center;
@@ -137,6 +139,8 @@ $pageTitle = $title . ' · Yapr';
     .vote-btn:active { transform: scale(0.95); }
     .vote-btn.is-up.is-active { background: #ff4500; color: #000; }
     .vote-btn.is-down.is-active { background: #ededed; color: #000; }
+    .vote-pill.is-up.is-active { background: #ff4500; color: #000; }
+    .vote-pill.is-down.is-active { background: #ededed; color: #000; }
     .vote-score {
       font-family: "Bricolage Grotesque", system-ui, sans-serif;
       font-size: 0.875rem;
@@ -169,7 +173,7 @@ $pageTitle = $title . ' · Yapr';
       color: #a1a1a1;
     }
     @media (hover: hover) and (pointer: fine) {
-      .card:hover { transform: translateY(-0.125rem); border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 1px rgba(50,145,255,0.40); }
+      .card:hover { transform: translateY(-0.125rem); border-color: rgba(255,255,255,0.2); }
       .btn-primary:hover { background: #ff4500; color: #000; }
       .btn-pop:hover { background: #d93a00; }
       .btn-ghost:hover { background: #161616; color: #ff4500; }
@@ -185,10 +189,19 @@ $pageTitle = $title . ' · Yapr';
       }
     }
   </style>
-  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
-  <link rel="stylesheet" href="css/polish.css">
+  <link rel="icon" type="image/svg+xml" href="/ForumHub/public/images/favicon.svg">
+  <link rel="stylesheet" href="/ForumHub/public/css/polish.css">
+  <link rel="stylesheet" href="/ForumHub/public/css/mobile.css">
 </head>
 <body class="h-full">
-<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:rounded-lg focus:bg-pop focus:px-4 focus:py-2 focus:text-white focus:outline-none">Skip to content</a>
 <?php require __DIR__ . '/navbar.php'; ?>
-<main id="main-content" class="relative z-10 mx-auto max-w-5xl animate-fade-in px-4 py-6">
+<main id="main-content" class="app-shell relative z-10 animate-fade-in px-6 pb-2 lg:pb-6" style="padding-top: calc(4rem + env(safe-area-inset-top, 0px));">
+<?php if (!isset($noSidebar)): ?>
+  <div class="flex flex-col gap-6 lg:flex-row">
+    <aside class="hidden w-[220px] shrink-0 lg:block">
+      <div class="sticky top-20 space-y-4">
+        <?php require __DIR__ . '/sidebar-left.php'; ?>
+      </div>
+    </aside>
+    <div class="min-w-0 flex-1">
+<?php endif; ?>

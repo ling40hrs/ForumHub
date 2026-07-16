@@ -22,7 +22,11 @@ $hashed = password_hash($password, PASSWORD_DEFAULT);
 $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed')";
 
 if (mysqli_query($conn, $sql)) {
-    $result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
+    $userId = mysqli_insert_id($conn);
+    $avatarUrl = 'https://i.pravatar.cc/100?u=' . urlencode($email);
+    mysqli_query($conn, "UPDATE users SET avatar = '$avatarUrl' WHERE id = $userId");
+
+    $result = mysqli_query($conn, "SELECT id, username, email, avatar AS avatar_url, created_at FROM users WHERE username = '$username'");
     $_SESSION["user"] = mysqli_fetch_assoc($result);
     header("Location: index.php");
     exit();

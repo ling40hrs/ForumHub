@@ -13,20 +13,20 @@ CREATE TABLE users (
     email      VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
     avatar     VARCHAR(255) DEFAULT NULL,
-    bio        TEXT         DEFAULT NULL,
-    karma      INT          NOT NULL DEFAULT 0,
+    endless_scroll TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- ── Communities ────────────────────────────────────────
 CREATE TABLE communities (
-    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(50)  NOT NULL,
-    slug        VARCHAR(60)  NOT NULL UNIQUE,
-    description TEXT         DEFAULT NULL,
-    owner_id    INT UNSIGNED NOT NULL,
-    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name            VARCHAR(50)  NOT NULL,
+    slug            VARCHAR(60)  NOT NULL UNIQUE,
+    description     TEXT         DEFAULT NULL,
+    owner_id        INT UNSIGNED NOT NULL,
+    background_url  VARCHAR(255) DEFAULT NULL,
+    created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
@@ -81,19 +81,24 @@ CREATE TABLE votes (
 -- ── Sample Data ─────────────────────────────────────────
 -- All sample passwords are the bcrypt hash of 'a' for demo purposes.
 
-INSERT INTO users (id, username, email, password, bio, karma) VALUES
-(1, 'ada', 'ada@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'CS student who builds things for the web. Moderator of r/webdev.', 1280),
-(2, 'linus', 'linus@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'PHP enthusiast and open-source contributor.', 960),
-(3, 'mira', 'mira@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'UI/UX designer who codes. Loves typography and dark mode.', 2040),
-(4, 'john', 'john@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'Learning web development and building cool stuff.', 150),
-(5, 'jane', 'jane@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'Full-stack developer. Ask me about databases.', 720);
+INSERT INTO users (id, username, email, password, avatar) VALUES
+(1, 'ada', 'ada@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'https://i.pravatar.cc/100?u=ada@yapr.dev'),
+(2, 'linus', 'linus@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'https://i.pravatar.cc/100?u=linus@yapr.dev'),
+(3, 'mira', 'mira@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'https://i.pravatar.cc/100?u=mira@yapr.dev'),
+(4, 'john', 'john@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'https://i.pravatar.cc/100?u=john@yapr.dev'),
+(5, 'jane', 'jane@yapr.dev', '$2y$10$eHDr2RHfhDoUy4z77rFPOueQb5aUDNDegOtpE8efbqQhE5pOGHVG2', 'https://i.pravatar.cc/100?u=jane@yapr.dev');
 
-INSERT INTO communities (id, name, slug, description, owner_id) VALUES
-(1, 'Web Dev', 'webdev', 'Talk about building for the web — HTML, CSS, PHP, JS.', 1),
-(2, 'PHP', 'php', 'Everything PHP: frameworks, patterns, and gotchas.', 1),
-(3, 'Design', 'design', 'UI/UX, typography, and visual design discussion.', 2),
-(4, 'MySQL', 'mysql', 'Schemas, indexing, and query tuning.', 2),
-(5, 'Student Projects', 'student-projects', 'Show off what you are building for class.', 3);
+INSERT INTO communities (id, name, slug, description, owner_id, background_url) VALUES
+(1, 'Web Dev', 'webdev', 'Talk about building for the web — HTML, CSS, PHP, JS.', 1,
+    'https://images.pexels.com/photos/1181271/pexels-photo-1181271.jpeg?auto=compress&cs=tinysrgb&w=1260&h=300&fit=crop'),
+(2, 'PHP', 'php', 'Everything PHP: frameworks, patterns, and gotchas.', 1,
+    'https://images.pexels.com/photos/374074/pexels-photo-374074.jpeg?auto=compress&cs=tinysrgb&w=1260&h=300&fit=crop'),
+(3, 'Design', 'design', 'UI/UX, typography, and visual design discussion.', 2,
+    'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=300&fit=crop'),
+(4, 'MySQL', 'mysql', 'Schemas, indexing, and query tuning.', 2,
+    'https://images.pexels.com/photos/5203849/pexels-photo-5203849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=300&fit=crop'),
+(5, 'Student Projects', 'student-projects', 'Show off what you are building for class.', 3,
+    'https://images.pexels.com/photos/4158/apple-iphone-smartphone-desk.jpg?auto=compress&cs=tinysrgb&w=1260&h=300&fit=crop');
 
 INSERT INTO community_members (user_id, community_id) VALUES
 (1,1),(2,1),(3,1),(4,1),(5,1),
@@ -113,7 +118,7 @@ INSERT INTO posts (id, title, body, user_id, community_id, score, created_at) VA
 INSERT INTO comments (id, body, user_id, post_id, score, created_at) VALUES
 (1, 'The no-build-step life is underrated.', 2, 1, 12, NOW() - INTERVAL 2 HOUR),
 (2, 'Did you keep any JS at all?', 3, 1, 4, NOW() - INTERVAL 1 HOUR),
-(3, 'Just a tiny bit for the search box focus state.', 1, 1, 6, NOW() - INTERVAL 1 HOUR),
+(3, 'Just a tiny bit for that smooth focus ring.', 1, 1, 6, NOW() - INTERVAL 1 HOUR),
 (4, 'This is the way.', 1, 2, 9, NOW() - INTERVAL 5 HOUR),
 (5, 'Bookmarked. Thank you!', 3, 2, 3, NOW() - INTERVAL 4 HOUR),
 (6, 'Constraints breed consistency.', 2, 3, 15, NOW() - INTERVAL 22 HOUR);
@@ -217,6 +222,23 @@ INSERT INTO comments (id, body, user_id, post_id, score, created_at) VALUES
 (44, 'I like the Tailwind approach. Clean and fast.', 3, 17, 4, NOW() - INTERVAL 66 HOUR),
 (45, 'Does it have pagination yet? That would be a nice addition.', 1, 17, 6, NOW() - INTERVAL 65 HOUR),
 (46, 'Presenting this to my class next week. Thanks for the inspiration.', 4, 17, 3, NOW() - INTERVAL 64 HOUR);
+
+-- Threaded sample replies (depth 1): each answers an existing top-level comment.
+INSERT INTO comments (id, body, user_id, post_id, parent_id, score, created_at) VALUES
+(47, 'Couldn''t agree more.', 5, 1, 1, 3, NOW() - INTERVAL 55 MINUTE),
+(49, 'Place-items is so clean. Underrated.', 1, 4, 8, 5, NOW() - INTERVAL 44 HOUR),
+(51, 'I still prefer flexbox honestly.', 5, 4, 8, 2, NOW() - INTERVAL 43 HOUR),
+(52, 'Plain PHP — a simple form POST and a recursive render.', 4, 17, 40, 6, NOW() - INTERVAL 67 HOUR);
+
+-- Threaded sample replies (depth 2): each answers a depth-1 reply above.
+INSERT INTO comments (id, body, user_id, post_id, parent_id, score, created_at) VALUES
+(48, 'Same here. Less tooling, fewer headaches.', 1, 1, 47, 2, NOW() - INTERVAL 50 MINUTE),
+(50, 'TIL place-items exists. Thanks!', 4, 4, 49, 4, NOW() - INTERVAL 43 HOUR),
+(53, 'Nice, no JS framework?', 1, 17, 52, 3, NOW() - INTERVAL 66 HOUR);
+
+-- Threaded sample reply (depth 3): answers the depth-2 reply above.
+INSERT INTO comments (id, body, user_id, post_id, parent_id, score, created_at) VALUES
+(54, 'None at all. Just server-rendered.', 4, 17, 53, 4, NOW() - INTERVAL 65 HOUR);
 
 INSERT INTO votes (user_id, target_id, target_type, value) VALUES
 (1,4,'post',1),(2,4,'post',1),(3,4,'post',-1),

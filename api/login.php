@@ -1,6 +1,8 @@
 <?php
 
 require __DIR__ . '/includes/helpers.php';
+$noSidebar = true;
+$noBottomNav = true;
 $title = 'Log in';
 require __DIR__ . '/includes/header.php';
 ?>
