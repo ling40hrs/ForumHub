@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-// Top navigation. $currentUser may be empty (logged-out state).
-$user = $currentUser ?? null;
+// Top navigation. Uses $_SESSION['user'] (may be empty for logged-out state).
+$user = $_SESSION['user'] ?? null;
 ?>
 <header class="sticky top-0 z-20 border-b border-line bg-night/90 backdrop-blur">
   <nav class="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3">

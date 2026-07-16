@@ -2,8 +2,38 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/sample-data.php';
+session_start();
+require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
+
+$postsResult = mysqli_query($conn, "
+    SELECT p.*, u.username AS author_username,
+           c.name AS community_name, c.slug AS community_slug,
+           (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments_count
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    JOIN communities c ON p.community_id = c.id
+    ORDER BY p.created_at DESC
+");
+$posts = [];
+while ($row = mysqli_fetch_assoc($postsResult)) {
+    $row['author'] = ['username' => $row['author_username']];
+    $row['community'] = $row['community_name'];
+    $row['comments_count'] = $row['comments_count'] ?? 0;
+    $row['author_id'] = $row['user_id'];
+    $row['time'] = timeAgo($row['created_at']);
+    $posts[] = $row;
+}
+
+$communitiesResult = mysqli_query($conn, "
+    SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count
+    FROM communities c ORDER BY c.name ASC
+");
+$communities = [];
+while ($row = mysqli_fetch_assoc($communitiesResult)) {
+    $communities[] = $row;
+}
+
 $title = 'Home';
 $ogType = 'website';
 $ogDescription = 'Yapr — a community where people yap about what they love.';
@@ -22,7 +52,9 @@ require __DIR__ . '/includes/header.php';
           <a href="#" class="text-ink-faint transition hover:text-ink">Top</a>
         </div>
       </div>
-      <a href="#" onclick="return false" class="btn-primary" title="Create a post — coming soon">New post</a>
+      <?php if (isset($_SESSION['user'])): ?>
+        <a href="create-post.php" class="btn-primary">New post</a>
+      <?php endif; ?>
     </div>
     <?php foreach ($posts as $i => $post): ?>
       <?= postCardHtml($post, $i) ?>

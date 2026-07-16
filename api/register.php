@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/sample-data.php';
 require __DIR__ . '/includes/helpers.php';
 $title = 'Sign up';
 require __DIR__ . '/includes/header.php';
@@ -11,7 +10,12 @@ require __DIR__ . '/includes/header.php';
   <div class="card animate-fade-in-up p-6">
     <h1 class="mb-1 font-display text-2xl font-bold text-ink">Create your account</h1>
     <p class="mb-6 text-sm text-ink-faint">Join Yapr and start posting.</p>
-    <form action="index.php" method="post" class="space-y-4">
+    <?php if (isset($_GET['error'])): ?>
+      <p class="mb-4 rounded-xl bg-pop-tint px-4 py-2 text-sm font-medium text-pop">
+        <?= $_GET['error'] == 1 ? 'All fields are required.' : 'Username or email already taken.' ?>
+      </p>
+    <?php endif; ?>
+    <form action="register-handler.php" method="post" class="space-y-4">
       <div>
         <label class="mb-1 block text-sm font-medium text-ink-soft">Username</label>
         <input name="username" type="text" required autocomplete="username" class="field">

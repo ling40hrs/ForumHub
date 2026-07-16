@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/sample-data.php';
 require __DIR__ . '/includes/helpers.php';
 $title = 'Log in';
 require __DIR__ . '/includes/header.php';
@@ -11,10 +10,13 @@ require __DIR__ . '/includes/header.php';
   <div class="card animate-fade-in-up p-6">
     <h1 class="mb-1 font-display text-2xl font-bold text-ink">Welcome back</h1>
     <p class="mb-6 text-sm text-ink-faint">Log in to your Yapr account.</p>
-    <form action="index.php" method="post" class="space-y-4">
+    <?php if (isset($_GET['error'])): ?>
+      <p class="mb-4 rounded-xl bg-pop-tint px-4 py-2 text-sm font-medium text-pop">Invalid username or password</p>
+    <?php endif; ?>
+    <form action="login-handler.php" method="post" class="space-y-4">
       <div>
-        <label class="mb-1 block text-sm font-medium text-ink-soft">Username or email</label>
-        <input name="identifier" type="text" required autocomplete="username" class="field">
+        <label class="mb-1 block text-sm font-medium text-ink-soft">Username</label>
+        <input name="username" type="text" required autocomplete="username" class="field">
       </div>
       <div>
         <label class="mb-1 block text-sm font-medium text-ink-soft">Password</label>

@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/sample-data.php';
+session_start();
+require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
 $title = 'Communities';
@@ -11,15 +12,22 @@ $ogDescription = 'Browse all communities on Yapr.';
 require __DIR__ . '/includes/header.php';
 
 $query = trim($_GET['q'] ?? '');
-$filtered = $communities;
+
 if ($query !== '') {
-    $lq = mb_strtolower($query);
-    $filtered = array_values(array_filter($communities, function ($c) use ($lq) {
-        return str_contains(mb_strtolower($c['name']), $lq)
-            || str_contains(mb_strtolower($c['description']), $lq);
-    }));
+    $result = mysqli_query($conn, "
+        SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count
+        FROM communities c
+        WHERE c.name LIKE '%$query%' OR c.description LIKE '%$query%'
+        ORDER BY c.name ASC
+    ");
+} else {
+    $result = mysqli_query($conn, "
+        SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count
+        FROM communities c ORDER BY c.name ASC
+    ");
 }
-$totalMembers = array_sum(array_column($communities, 'members_count'));
+$filtered = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$totalMembers = array_sum(array_column($filtered, 'members_count'));
 ?>
 <div class="space-y-6">
   <a href="index.php" class="text-sm text-ink-faint transition hover:text-pop">&larr; Back to feed</a>

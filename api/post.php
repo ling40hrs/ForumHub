@@ -2,20 +2,61 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/sample-data.php';
+session_start();
+require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
-$id = (int) ($_GET['id'] ?? $posts[0]['id']);
-$post = null;
-foreach ($posts as $p) {
-    if ((int) $p['id'] === $id) { $post = $p; break; }
-}
-if ($post === null) {
-    http_response_code(404);
-    $post = $posts[0];
+$id = (int) ($_GET['id'] ?? 0);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user'])) {
+    $body = $_POST['body'] ?? '';
+    $userId = (int) $_SESSION['user']['id'];
+    if ($body !== '') {
+        mysqli_query($conn, "INSERT INTO comments (body, user_id, post_id) VALUES ('$body', $userId, $id)");
+        header("Location: post.php?id=$id");
+        exit();
+    }
 }
 
-$postComments = array_filter($comments, fn($c) => ($c['post_id'] ?? 0) === $id);
+$postResult = mysqli_query($conn, "
+    SELECT p.*, u.username AS author_username,
+           c.name AS community_name, c.slug AS community_slug,
+           (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments_count
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    JOIN communities c ON p.community_id = c.id
+    WHERE p.id = $id
+");
+
+if (mysqli_num_rows($postResult) == 0) {
+    http_response_code(404);
+    $title = 'Not found';
+    require __DIR__ . '/includes/header.php';
+    echo '<div class="card p-8 text-center"><p class="text-ink-faint">Post not found.</p></div>';
+    require __DIR__ . '/includes/footer.php';
+    exit();
+}
+
+$post = mysqli_fetch_assoc($postResult);
+$post['author'] = ['username' => $post['author_username']];
+$post['community'] = $post['community_name'];
+$post['time'] = timeAgo($post['created_at']);
+$post['comments_count'] = $post['comments_count'] ?? 0;
+
+$commentsResult = mysqli_query($conn, "
+    SELECT c.*, u.username AS author_username
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+    WHERE c.post_id = $id
+    ORDER BY c.created_at ASC
+");
+$postComments = [];
+while ($row = mysqli_fetch_assoc($commentsResult)) {
+    $row['author'] = ['username' => $row['author_username']];
+    $row['time'] = timeAgo($row['created_at']);
+    $postComments[] = $row;
+}
+
 $title = $post['title'];
 $ogType = 'article';
 $ogDescription = mb_substr($post['body'] ?? '', 0, 200);

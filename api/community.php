@@ -2,20 +2,46 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/includes/sample-data.php';
+session_start();
+require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/helpers.php';
 
-$slug = $_GET['slug'] ?? $communities[0]['slug'];
-$community = null;
-foreach ($communities as $c) {
-    if ($c['slug'] === $slug) { $community = $c; break; }
-}
-if ($community === null) {
+$slug = $_GET['slug'] ?? '';
+
+$communityResult = mysqli_query($conn, "
+    SELECT c.*, (SELECT COUNT(*) FROM community_members WHERE community_id = c.id) AS members_count
+    FROM communities c WHERE c.slug = '$slug'
+");
+
+if (mysqli_num_rows($communityResult) == 0) {
     http_response_code(404);
-    $community = $communities[0];
+    $title = 'Not found';
+    require __DIR__ . '/includes/header.php';
+    echo '<div class="card p-8 text-center"><p class="text-ink-faint">Community not found.</p></div>';
+    require __DIR__ . '/includes/footer.php';
+    exit();
 }
 
-$communityPosts = array_filter($posts, fn($p) => ($p['community_slug'] ?? '') === $slug);
+$community = mysqli_fetch_assoc($communityResult);
+
+$postsResult = mysqli_query($conn, "
+    SELECT p.*, u.username AS author_username,
+           (SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS comments_count
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    WHERE p.community_id = {$community['id']}
+    ORDER BY p.created_at DESC
+");
+$communityPosts = [];
+while ($row = mysqli_fetch_assoc($postsResult)) {
+    $row['author'] = ['username' => $row['author_username']];
+    $row['community'] = $community['name'];
+    $row['community_slug'] = $community['slug'];
+    $row['time'] = timeAgo($row['created_at']);
+    $row['author_id'] = $row['user_id'];
+    $communityPosts[] = $row;
+}
+
 $title = $community['name'];
 $ogType = 'website';
 $ogDescription = $community['description'];

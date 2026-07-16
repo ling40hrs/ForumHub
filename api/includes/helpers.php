@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 // Presentation helpers for the Yapr static frontend (no framework).
 
+function timeAgo(string $datetime): string {
+    $timestamp = strtotime($datetime);
+    $diff = time() - $timestamp;
+    if ($diff < 60) return 'just now';
+    if ($diff < 3600) return floor($diff / 60) . 'm';
+    if ($diff < 86400) return floor($diff / 3600) . 'h';
+    if ($diff < 604800) return floor($diff / 86400) . 'd';
+    return date('M j', $timestamp);
+}
+
 function esc($value): string {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
